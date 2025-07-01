@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>貓咪互動頁</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #111;
+      color: white;
+      overflow-x: hidden;
+      cursor: url('https://cur.cursors-4u.net/animals/ani-1/ani125.cur'), auto;
+    }
+
+    .spacer {
+      height: 100vh;
+    }
+
+    .img-wrapper {
+      position: relative;
+      width: 500px;
+      height: 400px;
+      margin: 0 auto;
+    }
+
+    .side-img {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      opacity: 0;
+      transition: all 0.8s ease;
+    }
+
+    .top    { top: -150px; left: 50%; transform: translateX(-50%); }
+    .bottom { bottom: -150px; left: 50%; transform: translateX(-50%); }
+    .left   { left: -150px; top: 50%; transform: translateY(-50%); }
+    .right  { right: -150px; top: 50%; transform: translateY(-50%); }
+
+    .side-img.visible.top    { top: 50px; }
+    .side-img.visible.bottom { bottom: 50px; }
+    .side-img.visible.left   { left: 50px; }
+    .side-img.visible.right  { right: 50px; }
+
+    .circle {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 80px auto;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    .circle.animate {
+      animation: spin 3s ease-in-out forwards;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0); opacity: 0; }
+      50%  { opacity: 1; }
+      100% { transform: rotate(720deg); opacity: 1; }
+    }
+
+    .circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .tail {
+      position: absolute;
+      width: 40px;
+      height: 12px;
+      background: #a0522d;
+      border-radius: 20px;
+      bottom: 30px;
+      right: -30px;
+      transform-origin: left center;
+      animation: tail-wag 1s ease-in-out infinite;
+    }
+
+    @keyframes tail-wag {
+      0%, 100% { transform: rotate(0); }
+      50%      { transform: rotate(20deg); }
+    }
+
+    .options {
+      opacity: 0;
+      transition: opacity 1s ease;
+      text-align: center;
+      margin-bottom: 200px;
+    }
+
+    .options.visible {
+      opacity: 1;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      margin: 10px;
+      background: #555;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #f33;
+    }
+
+    dialog {
+      padding: 20px;
+      border: none;
+      border-radius: 8px;
+      background: #333;
+      color: white;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="spacer"></div>
+
+  <div class="img-wrapper" id="imgArea">
+    <img src="https://placekitten.com/300/300" class="side-img top" alt="top cat" />
+    <img src="https://placekitten.com/301/301" class="side-img left" alt="left cat" />
+    <img src="https://placekitten.com/302/302" class="side-img right" alt="right cat" />
+    <img src="https://placekitten.com/303/303" class="side-img bottom" alt="bottom cat" />
+  </div>
+
+  <div class="circle" id="mainCat">
+    <img src="https://placekitten.com/400/400" alt="main cat" />
+    <div class="tail"></div>
+  </div>
+
+  <div class="options" id="buttons">
+    <button onclick="showPopup()">打開彈窗</button>
+    <button onclick="location.href='page2.html'">前往新頁面</button>
+  </div>
+
+  <dialog id="popup">
+    <h3>👋 哈囉！</h3>
+    <p>這是彈出的訊息框。</p>
+    <button onclick="closePopup()">關閉</button>
+  </dialog>
+
+  <script>
+    const imgs = document.querySelectorAll('.side-img');
+    const wrapper = document.getElementById('imgArea');
+    const mainCat = document.getElementById('mainCat');
+    const btns = document.getElementById('buttons');
+
+    let triggered = false;
+    window.addEventListener('scroll', () => {
+      const rect = wrapper.getBoundingClientRect();
+      if (!triggered && rect.top < window.innerHeight - 100) {
+        triggered = true;
+
+        imgs.forEach((img, i) => {
+          setTimeout(() => img.classList.add('visible'), i * 400);
+        });
+
+        setTimeout(() => {
+          mainCat.classList.add('animate');
+          mainCat.style.opacity = 1;
+        }, imgs.length * 400 + 500);
+
+        setTimeout(() => btns.classList.add('visible'), imgs.length * 400 + 500 + 3000);
+      }
+    });
+
+    function showPopup() {
+      document.getElementById('popup').showModal();
+    }
+
+    function closePopup() {
+      document.getElementById('popup').close();
+    }
+  </script>
+</body>
+</html>
